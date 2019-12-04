@@ -92,11 +92,11 @@ class Ising2D:
         temp_array = np.concatenate((a1, a2,a3))
         temp_array_hot = np.concatenate((a1,a2,a3,a4))
         if temps == "cool":
-            temps = temp_array.flip()
+            temps = np.flip(temp_array)
         elif temps == "heat":
             temps = temp_array
         elif temps == "hotcool":
-            temps = temp_array_hot.flip()
+            temps = np.flip(temp_array_hot)
         else:
             print("Error: invalid temps argument")
             return
