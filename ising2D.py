@@ -5,13 +5,18 @@ class Ising2D:
     def __init__(self,system,J,N,T,H,steps):
         #initialize the system variables 
         
-        self.system = system      # N x N matrix of dipoles with spin up (1) or spin down (-1)
+        if system == "aligned":
+            self.system = np.ones((N,N), dtype=int)      # N x N matrix of dipoles with spin up (1)
+        elif system == "random":
+            self.system =  2*np.random.randint(2, size = (N,N)) - 1     # N x N matrix of dipoles with spin up (1) or spin down (-1)
+        else:
+            print("Invalid system argument: input 'aligned' or 'random'")
+            
         self.J      = J 
         self.N      = N           # Number of lattice points (dipoles) in the system
         self.T      = T           # Temperature of system
         self.H      = H           # External magnetic field
         self.steps  = steps       # Number of monte carlo steps 
-        #self.beta   = 1/T
         
         #initialize system parameters
         
@@ -33,8 +38,9 @@ class Ising2D:
         for i in range(self.N):
             for j in range(self.N):
                 energy += self.getEnergy(i,j)
-        return energy
-    
+        return energy/2
+        
+        
     def getMagnetization(self):
         self.M = np.sum(self.system.astype(float))/(self.N**2)
     
@@ -79,6 +85,21 @@ class Ising2D:
         return M
             
     def changingTemp(self,temps):
+        a1 = np.linspace(0.0001, 2, 10)
+        a2 = np.linspace(2, 3, 100)
+        a3 = np.linspace(3,10,80)
+        a4 = np.linspace(10,30,100)
+        temp_array = np.concatenate((a1, a2,a3))
+        temp_array_hot = np.concatenate((a1,a2,a3,a4))
+        if temps == "cool":
+            temps = temp_array.flip()
+        elif temps == "heat":
+            temps = temp_array
+        elif temps == "hotcool":
+            temps = temp_array_hot.flip()
+        else:
+            print("Error: invalid temps argument")
+            return
         E = []
         M = []
         for i in np.nditer(temps):
@@ -86,30 +107,7 @@ class Ising2D:
             self.run()
             E.append(self.E_tot)
             M.append(self.M)
-        return E,M
+        return E,M,temps
         
         
-        
-        
-N = 25
-system_aligned = np.ones((N,N), dtype=int)
-system_random = 2*np.random.randint(2, size = (N,N)) - 1
-T = 10
-J = 1
-H = -2
-steps = 5000
-temps = np.linspace(0.0001,50,100)
-
-Ising = Ising2D(system_random,J,N,T,H,steps)
-#Ising.run()
-#M = Ising.test()
-#plt.plot(M)
-#plt.show()
-
-E,M = Ising.changingTemp(temps)
-
-
-#plt.scatter(temps,E, color = 'r')
-plt.scatter(temps,M, color = 'b')
-plt.show()
         

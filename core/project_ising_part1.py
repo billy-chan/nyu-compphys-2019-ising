@@ -23,7 +23,7 @@ ext_mag = 0         # External magnetic field value.
 temperature = np.linspace(0.0001, 6, points)         # Setup the temperature independent variable.
 E_array     = np.zeros(points)                  # Setup the energy dependent variable.
 M_array     = np.zeros(points)                  # Setup the magnetization dependent variable.
-n           = 1 / (steps*N*N)                   # Standardization factor to obtain intensive values.
+n           = 1 / (N*N)                   # Standardization factor to obtain intensive values.
 
 
 # Creates the system for all spins aligned, s_i = 1.
@@ -97,6 +97,19 @@ for i in range(points):
     M_array[i] = n*M
 
 
+def mag(T):
+    z = np.exp(-2/T)
+    if T > 2.269185:
+        return 0
+    else:
+        return (((1 + z**2)**(.25))*(1-6*z**2 + z**4)**(.125))/np.sqrt((1-z**2))
+
+mags = []
+for i in np.nditer(temperature):
+    mags.append(mag(i))
+
+
+
 # Plot the data.
 plot = plt.figure(figsize=(16, 12))  
 
@@ -111,6 +124,7 @@ plt.axis('tight')
 # Figure for M(T).
 plot.add_subplot(212);
 plt.scatter(temperature, abs(M_array), color='b')
+plt.plot(temperature,mags)
 plt.title('Magnetization as a function of temperature')
 plt.xlabel("Temperature")
 plt.ylabel("Magnetization ")
@@ -119,3 +133,4 @@ plt.axis('tight')
 
 
 
+plt.show()
