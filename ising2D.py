@@ -92,16 +92,18 @@ class Ising2D:
         a1 = np.linspace(0.0001, 2, 20)
         a2 = np.linspace(2, 3, 20)
         a3 = np.linspace(3,10,100)
+        a4 = np.linspace(10,100,200)
         temp_array = np.concatenate((a1,a2,a3))
-        
+        temp_array_hot = np.concatenate((a1,a2,a3,a4))
         if temps == "cool":
             temps = np.flip(temp_array)
         elif temps == "heat":
             temps = temp_array
+        elif temps == "superhot":
+            temps = temp_array_hot
         else:
             print("Error: invalid temps argument")
             return
-        
         E = []
         M = []
         for i in np.nditer(temps, order='C'):
@@ -110,5 +112,6 @@ class Ising2D:
             E.append(self.E_tot)
             M.append(self.M)
         return E, M, temps
-
-
+        
+        
+        
