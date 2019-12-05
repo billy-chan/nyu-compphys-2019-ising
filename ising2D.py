@@ -85,11 +85,11 @@ class Ising2D:
         return M
             
     def changingTemp(self,temps):
-        a1 = np.linspace(0.0001, 2, 10)
-        a2 = np.linspace(2, 3, 100)
-        a3 = np.linspace(3,10,80)
+        a1 = np.linspace(0.0001, 2, 20)
+        a2 = np.linspace(2, 3, 20)
+        a3 = np.linspace(3,10,100)
         a4 = np.linspace(10,30,100)
-        temp_array = np.concatenate((a1, a2,a3))
+        temp_array = np.concatenate((a1,a2,a3))
         temp_array_hot = np.concatenate((a1,a2,a3,a4))
         if temps == "cool":
             temps = np.flip(temp_array)
@@ -102,7 +102,7 @@ class Ising2D:
             return
         E = []
         M = []
-        for i in np.nditer(temps):
+        for i in np.nditer(temps, order='C'):
             self.T = i
             self.run()
             E.append(self.E_tot)
